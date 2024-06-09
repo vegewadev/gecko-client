@@ -1,15 +1,33 @@
 name: Docker Image CI
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 jobs:
+
   build_and_publish:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Build and push the image
-        run: |
-          docker login --username vegewadev --password ${{ secrets.GH_PAT }} ghcr.io
-          docker build . --tag ghcr.io/vegewadev/gecko-client:latest
-          docker push ghcr.io/vegewadev/gecko-client:latest
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: |
+          ghcr.io/vegewadev/gecko-client:latest
