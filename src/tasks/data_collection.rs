@@ -1,10 +1,10 @@
-use std::{error::Error, time::Duration};
+use std::time::Duration;
 use tokio::time;
 use tracing::{error, info};
 
 use dht11_gpio::{DHT11Controller, Sensor};
 
-pub async fn run() -> Result<(), Box<dyn Error>> {
+pub async fn run() {
     info!("Starting task: data_collections");
 
     const DHT11_PIN: u8 = 4;
@@ -19,7 +19,7 @@ pub async fn run() -> Result<(), Box<dyn Error>> {
                 info!("captured humidity: {} %", data.humidity);
             }
             Err(err) => {
-                error!("error caputring temperature and humidity: {}", err);
+                error!("error capturing temperature and humidity: {}", err);
             }
         }
         time::sleep(Duration::from_secs(10)).await;
