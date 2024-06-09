@@ -1,4 +1,8 @@
 mod database;
+mod tasks;
+mod utils;
+
+use std::time::Duration;
 
 use database::database::Database;
 use dotenv::dotenv;
@@ -21,16 +25,22 @@ async fn main() -> Result<()> {
     match Database::connect(connection_string).await {
         Ok(db) => {
             if let Some(_client) = db.client {
-                info!("[INFO] Database connected successfully");
+                info!("Database connected successfully");
+
+                info!("Spawning task: data_collection");
+                utils::spawn_task::spawn_task_data_collection().await;
             } else {
-                error!("[ERROR] Client is None after successful connection");
+                error!("Client is None after successful connection");
             }
         }
         Err(e) => {
-            error!("[ERROR] Failed to connect to the database: {:?}", e);
+            error!("Failed to connect to the database: {:?}", e);
             return Err(e);
         }
     }
 
-    Ok(())
+    // Program loop so it doesn't exit
+    loop {
+        tokio::time::sleep(Duration::from_secs(1)).await;
+    }
 }
