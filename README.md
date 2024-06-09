@@ -14,13 +14,13 @@ Before running this project, ensure that you have the following prerequisites in
 1. Clone the repository:
 
 ```
-git clone https://github.com/your-username/gecko-analytics.git
+git clone https://github.com/vegewadev/gecko-client.git
 ```
 
 2. Change to the project directory:
 
 ```
-cd gecko-analytics
+cd gecko-client
 ```
 
 3. Build the project:
