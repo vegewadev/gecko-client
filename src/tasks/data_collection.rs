@@ -70,7 +70,7 @@ pub async fn run(client: Client) {
                         humidity: String::from("Percentage"),
                     },
                     metadata: Metadata {
-                        sensor_type: String::from("DHT22"),
+                        sensor_type: String::from("DHT11"),
                         installation_date: BsonDateTime::from_millis(
                             Utc.ymd(2023, 1, 1).and_hms(0, 0, 0).timestamp_millis(),
                         ),
