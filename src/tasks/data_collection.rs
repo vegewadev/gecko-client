@@ -97,15 +97,11 @@ pub async fn run(client: Client) {
 
                             let modification: UpdateModifications = UpdateModifications::Document(
                                 doc! {
-                                    "$push": {
-                                        "interval_start": {
-                                            "$each": doc! {
+                                    "$push": doc! {
                                                 "timestamp": BsonDateTime::from_millis(millis_since_epoch),
                                                 "temperature": data.temperature,
                                                 "humidity": data.humidity,
                                             },
-                                        }
-                                    }
                                 },
                             );
 
