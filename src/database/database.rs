@@ -8,7 +8,7 @@ pub struct Database {
 
 impl Database {
     pub async fn connect(connection_string: String) -> Result<Self> {
-        let client_options = match ClientOptions::parse(&connection_string).await {
+        let client_options: ClientOptions = match ClientOptions::parse(&connection_string).await {
             Ok(options) => options,
             Err(e) => {
                 error!("Failed to parse client options: {:?}", e);

@@ -10,9 +10,10 @@ pub async fn run() {
     const DHT11_PIN: u8 = 4;
 
     loop {
-        let mut sensor = DHT11Controller::new(DHT11_PIN).unwrap();
+        let mut sensor: DHT11Controller = DHT11Controller::new(DHT11_PIN).unwrap();
 
-        let result = sensor.read_sensor_data();
+        let result: Result<dht11_gpio::DHT11Result, dht11_gpio::DHT11Error> =
+            sensor.read_sensor_data();
         match result {
             Ok(data) => {
                 info!("captured temperature: {} °C", data.temperature);
