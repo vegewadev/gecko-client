@@ -11,18 +11,18 @@ impl Database {
         let client_options = match ClientOptions::parse(&connection_string).await {
             Ok(options) => options,
             Err(e) => {
-                error!("[ERROR] Failed to parse client options: {:?}", e);
+                error!("Failed to parse client options: {:?}", e);
                 return Err(e.into());
             }
         };
 
         let client = match Client::with_options(client_options) {
             Ok(client) => {
-                info!("[INFO] Successfully created client with options");
+                info!("Successfully created client with options");
                 client
             }
             Err(e) => {
-                error!("[ERROR] Failed to create client with options: {:?}", e);
+                error!("Failed to create client with options: {:?}", e);
                 return Err(e.into());
             }
         };
@@ -30,7 +30,7 @@ impl Database {
         // Test database connection
         match client.list_database_names(None, None).await {
             Ok(_) => {
-                info!("[INFO] Database connection test succeeded");
+                info!("Database connection test succeeded");
                 Ok(Database {
                     connection_string,
                     client: Some(client),
@@ -38,7 +38,7 @@ impl Database {
             }
             Err(e) => {
                 error!(
-                    "[ERROR] Database connection test failed. Failed to list database names: {:?}",
+                    "Database connection test failed. Failed to list database names: {:?}",
                     e
                 );
                 Err(e.into())
