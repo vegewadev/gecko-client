@@ -24,11 +24,11 @@ async fn main() -> Result<()> {
 
     match Database::connect(connection_string).await {
         Ok(db) => {
-            if let Some(_client) = db.client {
+            if let Some(client) = db.client {
                 info!("Database connected successfully");
 
                 info!("Spawning task: data_collection");
-                utils::spawn_task::spawn_task_data_collection().await;
+                utils::spawn_task::spawn_task_data_collection(client).await;
             } else {
                 error!("Client is None after successful connection");
             }
