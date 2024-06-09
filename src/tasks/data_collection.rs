@@ -1,11 +1,11 @@
 use chrono::prelude::*;
 use mongodb::{
-    bson::{doc, DateTime as BsonDateTime},
-    options::{FindOneOptions, FindOptions},
+    bson::{self, doc, DateTime as BsonDateTime},
+    options::{FindOneOptions, UpdateModifications, UpdateOptions},
     Client, Collection,
 };
 use serde::{Deserialize, Serialize};
-use std::{panic::UnwindSafe, time::Duration};
+use std::time::Duration;
 use tokio::time;
 use tracing::{error, info};
 
@@ -37,11 +37,6 @@ struct Units {
 struct Metadata {
     sensor_type: String,
     installation_date: BsonDateTime,
-}
-
-struct IntervalStartResult {
-    within_last_120_minutes: bool,
-    last_interval_start: Option<DateTime<Utc>>,
 }
 
 async fn check_interval_start_in_last_120_minutes(
@@ -92,10 +87,55 @@ pub async fn run(client: Client) {
                 match check_interval_start_in_last_120_minutes(collection.clone()).await {
                     Ok((is_within_last_120_minutes, result)) => {
                         info!("Is within last 120 minutes: {}", is_within_last_120_minutes);
+
+                        let now: DateTime<Utc> = Utc::now();
+                        let now_with_offset: DateTime<Utc> = now.with_timezone(&Utc);
+                        let millis_since_epoch: i64 = now_with_offset.timestamp_millis();
+
                         if let Some(doc) = result {
-                            info!("Last document: {:?}", doc);
+                            info!("Document found within last 120 minutes, updating");
+
+                            let modification: UpdateModifications = UpdateModifications::Document(
+                                doc! {
+                                    "$push": {
+                                        "interval_start": {
+                                            "$each": doc! {
+                                                "timestamp": BsonDateTime::from_millis(millis_since_epoch),
+                                                "temperature": data.temperature,
+                                                "humidity": data.humidity,
+                                            },
+                                        }
+                                    }
+                                },
+                            );
+
+                            let update_options: UpdateOptions = UpdateOptions::builder().build();
+
+                            let result: Result<
+                                mongodb::results::UpdateResult,
+                                mongodb::error::Error,
+                            > = collection
+                                .update_one(
+                                    doc! { "interval_start": doc.interval_start },
+                                    modification,
+                                    update_options,
+                                )
+                                .await;
+
+                            match result {
+                                Ok(update_result) => {
+                                    if update_result.matched_count == 1 {
+                                        info!("Document updated successfully");
+                                    } else {
+                                        info!("No document matched the filter");
+                                    }
+                                }
+                                Err(err) => {
+                                    error!("Error updating document: {}", err);
+                                }
+                            }
                         } else {
-                            info!("No document found within last 120 minutes. Creating a new one");
+                            info!("No document found within last 120 minutes, creating a new one");
 
                             let now: DateTime<Utc> = Utc::now();
                             let now_with_offset: DateTime<Utc> = now.with_timezone(&Utc);
