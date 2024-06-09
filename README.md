@@ -49,7 +49,7 @@ cargo build --release
 
 ```
 
-### Using Docker
+### Using Docker (arm64 only)
 
 You can also run this project using Docker by pulling the pre-built image:
 
@@ -63,7 +63,7 @@ Then, run the container with the necessary environment variables:
 
 ```
 
-docker run -e CONNECTION_STRING="mongodb://username:password@host:port/database" ghcr.io/vegewadev/gecko-client:latest
+docker run --platform linux/arm64 -e CONNECTION_STRING="mongodb://mongo:27017/" ghcr.io/vegewadev/gecko-client:latest
 
 ```
 
