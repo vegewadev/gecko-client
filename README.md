@@ -63,7 +63,8 @@ Then, run the container with the necessary environment variables:
 
 ```
 
-docker run --platform linux/arm64 -e CONNECTION_STRING="mongodb://mongo:27017/" ghcr.io/vegewadev/gecko-client:latest
+docker run --platform linux/arm64 --privileged -v /dev/gpiomem:/dev/gpiomem -e CONNECTION_STRING="mongodb://mongo:27017/" -e RUST_BACKTRACE=1 ghcr.io/vegewadev/gecko-client:latest
+
 
 ```
 
