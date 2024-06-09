@@ -14,25 +14,19 @@ Before running this project, ensure that you have the following prerequisites in
 1. Clone the repository:
 
 ```
-
 git clone https://github.com/your-username/gecko-analytics.git
-
 ```
 
 2. Change to the project directory:
 
 ```
-
 cd gecko-analytics
-
 ```
 
 3. Build the project:
 
 ```
-
 cargo build --release
-
 ```
 
 ## Running the Project
@@ -44,9 +38,7 @@ cargo build --release
 2. Run the compiled binary:
 
 ```
-
-./target/release/gecko-analytics
-
+./target/release/gecko-client
 ```
 
 ### Using Docker (arm64 only)
@@ -54,18 +46,13 @@ cargo build --release
 You can also run this project using Docker by pulling the pre-built image:
 
 ```
-
 docker pull ghcr.io/vegewadev/gecko-client:latest
-
 ```
 
 Then, run the container with the necessary environment variables:
 
 ```
-
 docker run --platform linux/arm64 --privileged -v /dev/gpiomem:/dev/gpiomem -e CONNECTION_STRING="mongodb://mongo:27017/" -e RUST_BACKTRACE=1 ghcr.io/vegewadev/gecko-client:latest
-
-
 ```
 
 Replace `CONNECTION_STRING` with the appropriate connection string for your MongoDB instance.
