@@ -62,7 +62,3 @@ Replace `CONNECTION_STRING` with the appropriate connection string for your Mong
 The project can be configured using environment variables:
 
 - `CONNECTION_STRING`: The connection string for the MongoDB instance (required).
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
