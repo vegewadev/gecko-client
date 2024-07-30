@@ -1,4 +1,4 @@
-FROM rust
+FROM rust:slim
 
 RUN apt-get update && apt-get install -y \
     libgpiod-dev \
